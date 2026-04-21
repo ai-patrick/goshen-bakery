@@ -3,7 +3,7 @@
 
 const express    = require('express');
 const nodemailer = require('nodemailer');
-const db         = require('../db/database');
+const ContactSubmission = require('../models/ContactSubmission');
 
 const router = express.Router();
 
@@ -30,13 +30,15 @@ router.post('/', async (req, res) => {
   }
 
   // 1. Save to database
-  let submissionId;
+  let submission;
   try {
-    const result = db.prepare(`
-      INSERT INTO contact_submissions (first_name, last_name, email, phone, occasion)
-      VALUES (@first_name, @last_name, @email, @phone, @occasion)
-    `).run({ first_name: fname, last_name: lname, email, phone: phone || null, occasion });
-    submissionId = result.lastInsertRowid;
+    submission = await ContactSubmission.create({
+      first_name: fname,
+      last_name:  lname,
+      email,
+      phone: phone || null,
+      occasion
+    });
   } catch (err) {
     console.error('[Contact] DB error:', err.message);
     return res.status(500).json({ error: 'Could not save your request. Please try again.' });
@@ -72,7 +74,7 @@ router.post('/', async (req, res) => {
             Reply via WhatsApp
           </a>
         </p>
-        <p style="color:#aaa;font-size:12px;margin-top:20px">Submission #${submissionId} — Goshen Home Bakery CRM</p>
+        <p style="color:#aaa;font-size:12px;margin-top:20px">Submission #${submission._id} — Goshen Home Bakery CRM</p>
       </div>
     `;
 

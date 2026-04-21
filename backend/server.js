@@ -2,9 +2,10 @@
 
 require('dotenv').config();
 
-const express = require('express');
-const cors    = require('cors');
-const path    = require('path');
+const express   = require('express');
+const cors      = require('cors');
+const path      = require('path');
+const connectDB = require('./db/database');
 
 const app = express();
 
@@ -25,12 +26,8 @@ app.use('/api/cakes',   require('./routes/cakes'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/auth',    require('./routes/auth'));
 
-// Admin routes (mounted on /api/cakes internally — see cakes.js for /admin/*)
-// All admin cake/contact management endpoints live in routes/cakes.js
-
 // ─── Catch-all: serve index.html for any unmatched route ─────────────────────
 app.get('*', (req, res) => {
-  // Don't redirect API calls
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Not found.' });
   }
@@ -46,9 +43,17 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: err.message || 'Internal server error.' });
 });
 
-// ─── Start ────────────────────────────────────────────────────────────────────
+// ─── Connect to MongoDB then start ───────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n🧁  Goshen Home Bakery server running at http://localhost:${PORT}`);
-  console.log(`    Admin dashboard: http://localhost:${PORT}/admin.html\n`);
-});
+
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`\n🧁  Goshen Home Bakery server running at http://localhost:${PORT}`);
+      console.log(`    Admin dashboard: http://localhost:${PORT}/admin.html\n`);
+    });
+  })
+  .catch(err => {
+    console.error('[Fatal] Could not connect to MongoDB:', err.message);
+    process.exit(1);
+  });
