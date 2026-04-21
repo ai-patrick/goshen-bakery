@@ -49,8 +49,8 @@ const PORT = process.env.PORT || 3000;
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`\n🧁  Goshen Home Bakery server running at http://localhost:${PORT}`);
-      console.log(`    Admin dashboard: http://localhost:${PORT}/admin.html\n`);
+      console.log(`\n🧁  Goshen Home Bakery server running at https://goshen-bakery.onrender.com`);
+      console.log(`    Admin dashboard: https://goshen-bakery.onrender.com/admin.html\n`);
     });
   })
   .catch(err => {

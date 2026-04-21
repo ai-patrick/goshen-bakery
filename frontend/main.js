@@ -1,6 +1,7 @@
 /* ----------------------------------------------------------
    CAKE GALLERY — fetches data from /api/cakes
 ---------------------------------------------------------- */
+const API = 'https://goshen-bakery.onrender.com';
 const grid = document.getElementById('cakeGrid');
 let allCakes = []; // cached from API
 
@@ -27,7 +28,7 @@ function showSkeletons(n = 8) {
 async function fetchCakes() {
   showSkeletons();
   try {
-    const res  = await fetch('/api/cakes');
+    const res  = await fetch(API + '/api/cakes');
     if (!res.ok) throw new Error('Server responded ' + res.status);
     allCakes = await res.json();
     renderCakes('all');
@@ -107,7 +108,7 @@ grid.addEventListener('click', async e => {
   btn.textContent = '⏳ Saving…';
   btn.disabled = true;
   try {
-    const res  = await fetch(url);
+    const res  = await fetch(url.startsWith('http') ? url : API + url);
     const blob = await res.blob();
     const a    = document.createElement('a');
     a.href     = URL.createObjectURL(blob);
@@ -150,7 +151,7 @@ document.getElementById('orderForm').addEventListener('submit', async e => {
   msgEl.textContent = '';
 
   try {
-    const res  = await fetch('/api/contact', {
+    const res  = await fetch(API + '/api/contact', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(body)
