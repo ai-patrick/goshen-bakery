@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goshen Home Bakery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVBAR
+  ============================================================ -->
+  <nav id="navbar" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo" aria-label="Goshen Bakery Home">
+      <div class="logo-icon" aria-hidden="true">🧁</div>
+      Goshen <span>Bakery</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#cakes">Cakes</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile overlay menu -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <a href="#hero"    class="mobile-link">Home</a>
+    <a href="#cakes"   class="mobile-link">Cakes</a>
+    <a href="#about"   class="mobile-link">About</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section id="hero" aria-label="Hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-circle hero-circle-1" aria-hidden="true"></div>
+    <div class="hero-circle hero-circle-2" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow" aria-hidden="true">Nairobi's Favourite Bakery</div>
+      <h1 class="hero-h1">
+        Fresh <em>Homemade</em><br>Cakes
+      </h1>
+      <p class="hero-sub">Made with love for every occasion — birthdays, weddings &amp; beyond</p>
+      <a href="#cakes" class="hero-cta" aria-label="Browse our cake gallery">
+        View Cakes
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">
+      <div class="mouse"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+  ============================================================ -->
+  <section id="about" aria-labelledby="about-title">
+    <div class="about-visual reveal">
+      <img
+        class="about-img"
+        src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800&q=80"
+        alt="Baker carefully decorating a layered cake with cream and flowers"
+        loading="lazy"
+      />
+      <div class="about-badge" aria-label="Family bakery since 2012">
+        <span class="num">12+</span>
+        <span class="lbl">Years of<br>Baking</span>
+      </div>
+    </div>
+
+    <div class="about-text reveal" style="transition-delay:0.15s">
+      <p class="section-tag">Our Story</p>
+      <h2 id="about-title" class="section-title">Baked Fresh, Made<br>with Purpose</h2>
+      <p>Goshen Home Bakery was born from a simple belief: that every celebration deserves a cake that's as special as the moment itself. Started from our family kitchen in Nairobi, we've grown into a beloved local institution without losing the handcrafted soul.</p>
+      <p>Every tier, every frosting swirl, every sugar flower is shaped by hand — because shortcuts have no place when love is the main ingredient.</p>
+      <div class="about-pillars" role="list" aria-label="Our values">
+        <span class="pillar" role="listitem">✦ All-Natural Ingredients</span>
+        <span class="pillar" role="listitem">✦ Custom Orders Welcome</span>
+        <span class="pillar" role="listitem">✦ Same-Day Delivery</span>
+        <span class="pillar" role="listitem">✦ Allergen-Friendly Options</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CAKES GALLERY
+  ============================================================ -->
+  <section id="cakes" aria-labelledby="cakes-title">
+    <div class="gallery-header">
+      <div class="reveal">
+        <p class="section-tag">Our Collection</p>
+        <h2 id="cakes-title" class="section-title">Hand-Crafted<br>Creations</h2>
+        <p class="section-sub">Each cake is made to order — click download to save the design you love.</p>
+      </div>
+      <div class="filter-tabs reveal" style="transition-delay:0.2s" role="group" aria-label="Filter cakes by category">
+        <button class="filter-btn active" data-filter="all">All Cakes</button>
+        <button class="filter-btn" data-filter="celebration">Celebration</button>
+        <button class="filter-btn" data-filter="wedding">Wedding</button>
+        <button class="filter-btn" data-filter="custom">Custom</button>
+      </div>
+    </div>
+
+    <div class="cake-grid" id="cakeGrid" role="list">
+      <!-- Cards injected by JS -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TESTIMONIALS
+  ============================================================ -->
+  <section id="testimonials" aria-labelledby="testi-title">
+    <div class="blob" aria-hidden="true"></div>
+    <div class="testimonials-inner">
+      <p class="section-tag">Kind Words</p>
+      <h2 id="testi-title" class="section-title">What Our Clients Say</h2>
+      <div class="testi-cards reveal">
+        <article class="testi-card">
+          <div class="testi-stars" aria-label="5 stars">★★★★★</div>
+          <p class="testi-text">"The wedding cake was absolutely breathtaking. Three tiers of lavender and gold — every guest was stunned. Goshen outdid themselves."</p>
+          <p class="testi-author">Aisha Kamau</p>
+          <p class="testi-role">Bride, Karen Nairobi</p>
+        </article>
+        <article class="testi-card">
+          <div class="testi-stars" aria-label="5 stars">★★★★★</div>
+          <p class="testi-text">"Ordered a custom chocolate drip cake for my son's 5th birthday. The detail on the dinosaurs was incredible. He cried happy tears!"</p>
+          <p class="testi-author">Brian Otieno</p>
+          <p class="testi-role">Parent, Westlands</p>
+        </article>
+        <article class="testi-card">
+          <div class="testi-stars" aria-label="5 stars">★★★★★</div>
+          <p class="testi-text">"Professional, prompt, and the taste was heavenly. Our corporate event cakes were the talk of the office for weeks. 10/10 will order again."</p>
+          <p class="testi-author">Mercy Wanjiku</p>
+          <p class="testi-role">Events Manager, CBD</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+  ============================================================ -->
+  <section id="contact" aria-labelledby="contact-title">
+    <div class="contact-info reveal">
+      <p class="section-tag">Get in Touch</p>
+      <h2 id="contact-title" class="section-title">Order Your<br>Dream Cake</h2>
+      <p class="section-sub" style="margin-bottom:2.4rem">Have a vision? Let's bring it to life. Reach out and our team will get back to you within the hour.</p>
+
+      <div class="contact-detail">
+        <div class="contact-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9.93a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+        </div>
+        <div class="contact-detail-text">
+          <strong>Phone &amp; WhatsApp</strong>
+          <span>+254 700 123 456</span>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="contact-detail-text">
+          <strong>Email</strong>
+          <span>hello@goshenbakery.co.ke</span>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <div class="contact-detail-text">
+          <strong>Location</strong>
+          <span>Kileleshwa, Nairobi, Kenya</span>
+        </div>
+      </div>
+
+      <div class="social-links" aria-label="Follow us on social media">
+        <a href="#" class="social-btn" aria-label="Follow us on Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="Follow us on Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="Message us on WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="Watch us on TikTok">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.77 1.52V6.76a4.85 4.85 0 01-1-.07z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="contact-form reveal" style="transition-delay:0.18s">
+      <form id="orderForm" novalidate aria-label="Place a cake order">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" placeholder="Jane" autocomplete="given-name" required />
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" placeholder="Doe" autocomplete="family-name" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone / WhatsApp</label>
+          <input type="tel" id="phone" name="phone" placeholder="+254 7XX XXX XXX" autocomplete="tel" />
+        </div>
+        <div class="form-group">
+          <label for="occasion">Occasion &amp; Details</label>
+          <textarea id="occasion" name="occasion" placeholder="Tell us about your event, cake size, flavour, and any special decorations…" required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send My Order Request ✦</button>
+      </form>
+      <div id="formMessage" class="form-message" role="alert" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="blob" aria-hidden="true"></div>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#hero" class="nav-logo" aria-label="Back to top">
+          <div class="logo-icon" aria-hidden="true">🧁</div>
+          Goshen <span>Bakery</span>
+        </a>
+        <p>Handcrafted cakes made with love for every milestone. Based in Nairobi, delivering sweetness across the city.</p>
+        <div class="social-links" aria-label="Social media links">
+          <a href="#" class="social-btn" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+          <a href="#" class="social-btn" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" class="social-btn" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#cakes">Cakes Gallery</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Order Now</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+254700123456">+254 700 123 456</a></li>
+          <li><a href="mailto:hello@goshenbakery.co.ke">hello@goshenbakery.co.ke</a></li>
+          <li><a href="#">Kileleshwa, Nairobi</a></li>
+          <li><a href="#">Mon–Sat: 8 AM – 7 PM</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Goshen Home Bakery. All rights reserved.</p>
+      <p>Made with ♥ in Nairobi &nbsp;·&nbsp; <a href="/admin.html" class="admin-link">Admin</a></p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goshen Bakery — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+============================================================ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon" aria-hidden="true">🧁</div>
+      <span>Goshen <em>Admin</em></span>
+    </div>
+    <h1>Sign In</h1>
+    <div id="loginError" class="login-error" role="alert" aria-live="polite"></div>
+    <div class="form-group">
+      <label for="loginUser">Username</label>
+      <input type="text" id="loginUser" placeholder="admin" autocomplete="username" />
+    </div>
+    <div class="form-group">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button id="loginBtn" class="btn btn-primary btn-full">Sign In</button>
+    <a href="/" class="back-link">← Back to public site</a>
+  </div>
+</div>
+
+<!-- ============================================================
+     ADMIN DASHBOARD
+============================================================ -->
+<div id="dashboard" class="dashboard hidden">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" aria-hidden="true">🧁</div>
+      <span>Goshen <em>Admin</em></span>
+    </div>
+    <nav class="sidebar-nav" aria-label="Admin navigation">
+      <button class="nav-item active" data-panel="cakes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Cake Gallery
+      </button>
+      <button class="nav-item" data-panel="pricing">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Pricing
+      </button>
+      <button class="nav-item" data-panel="contacts">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Enquiries
+        <span class="badge" id="newBadge" aria-label="New enquiries"></span>
+      </button>
+    </nav>
+    <button id="logoutBtn" class="logout-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log Out
+    </button>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-title" id="topbarTitle">Cake Gallery</div>
+      <div class="topbar-actions">
+        <span id="topbarUser" class="topbar-user"></span>
+        <a href="/" target="_blank" class="btn btn-ghost btn-sm">View Site ↗</a>
+      </div>
+    </header>
+
+    <!-- Stats bar -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">—</div>
+        <div class="stat-lbl">Total Cakes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statActive">—</div>
+        <div class="stat-lbl">Active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statEnquiries">—</div>
+        <div class="stat-lbl">Enquiries</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statNew">—</div>
+        <div class="stat-lbl">New Today</div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: CAKE GALLERY ── -->
+    <section class="panel active" id="panelCakes">
+      <div class="panel-header">
+        <h2>Cake Gallery</h2>
+        <button class="btn btn-primary" id="addCakeBtn">+ Add Cake</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" aria-label="Cake management table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price (KES)</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="cakeTableBody">
+            <tr><td colspan="6" class="loading-row">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── PANEL: PRICING ── -->
+    <section class="panel" id="panelPricing">
+      <div class="panel-header">
+        <h2>Bulk Price Editor</h2>
+        <button class="btn btn-primary" id="savePricesBtn">Save All Prices</button>
+      </div>
+      <p class="panel-hint">Edit prices directly in the table below, then click <strong>Save All Prices</strong>.</p>
+      <div id="priceSaveMsg" class="save-msg" role="alert" aria-live="polite"></div>
+      <div class="table-wrap">
+        <table class="data-table" aria-label="Pricing table">
+          <thead>
+            <tr>
+              <th>Cake</th>
+              <th>Category</th>
+              <th style="width:180px">Price (KES)</th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody">
+            <tr><td colspan="3" class="loading-row">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── PANEL: CONTACTS ── -->
+    <section class="panel" id="panelContacts">
+      <div class="panel-header">
+        <h2>Order Enquiries</h2>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" aria-label="Contact submissions table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Email / Phone</th>
+              <th>Occasion / Details</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="contactTableBody">
+            <tr><td colspan="5" class="loading-row">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     ADD / EDIT CAKE MODAL
+============================================================ -->
+<div id="cakeModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Cake</h3>
+      <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+    </div>
+
+    <div id="modalError" class="modal-error" role="alert" aria-live="polite"></div>
+
+    <div class="modal-body">
+      <input type="hidden" id="cakeId" />
+
+      <!-- Image upload -->
+      <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload cake image">
+        <img id="imgPreview" src="" alt="" style="display:none" />
+        <div id="uploadPlaceholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Click or drag to upload image</span>
+          <small>JPG, PNG, WebP — max 8 MB</small>
+        </div>
+        <input type="file" id="imageInput" accept="image/*" style="display:none" aria-label="Choose image file" />
+      </div>
+
+      <div class="modal-fields">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="cakeName">Name *</label>
+            <input type="text" id="cakeName" placeholder="Velvet Dream Cake" required />
+          </div>
+          <div class="form-group">
+            <label for="cakeCategory">Category *</label>
+            <select id="cakeCategory">
+              <option value="celebration">Celebration</option>
+              <option value="wedding">Wedding</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="cakePrice">Price (KES)</label>
+            <input type="number" id="cakePrice" placeholder="3500" min="0" step="100" />
+          </div>
+          <div class="form-group">
+            <label for="cakeActive">Status</label>
+            <select id="cakeActive">
+              <option value="1">Active (visible)</option>
+              <option value="0">Hidden</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cakeDesc">Description</label>
+          <textarea id="cakeDesc" placeholder="Classic red velvet with cream cheese frosting…"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="cakeAlt">Image Alt Text <small>(for accessibility)</small></label>
+          <input type="text" id="cakeAlt" placeholder="Three-tier red velvet cake with rose petals" />
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalSave">Save Cake</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm delete dialog -->
+<div id="confirmModal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3 id="confirmTitle">Hide this cake?</h3>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMsg" style="color:var(--text-mid)">This cake will be hidden from the public gallery. You can restore it at any time.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Yes, Hide It</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

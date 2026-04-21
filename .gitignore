@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+goshen.db
+goshen.db-wal
+goshen.db-shm
+mnt/
+.DS_Store
+uploads/
