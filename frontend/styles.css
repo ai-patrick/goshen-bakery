@@ -304,46 +304,6 @@ ul { list-style: none; }
 .hero-cta svg { transition: transform var(--transition); }
 .hero-cta:hover svg { transform: translateX(4px); }
 
-/* Scroll indicator */
-.scroll-hint {
-  position: absolute;
-  bottom: 36px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  opacity: 0.6;
-  animation: fadeIn 1.2s 1.4s both;
-}
-.scroll-hint span {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #fff;
-}
-.scroll-hint .mouse {
-  width: 22px; height: 34px;
-  border: 1.5px solid rgba(255,255,255,0.5);
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  padding-top: 6px;
-}
-.scroll-hint .mouse::after {
-  content: '';
-  width: 3px; height: 7px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 2px;
-  animation: scrollBob 1.6s ease-in-out infinite;
-}
-@keyframes scrollBob {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  60%       { transform: translateY(6px); opacity: 0.3; }
-}
-
 /* ============================================================
    SECTION SHARED
 ============================================================ */
@@ -800,6 +760,10 @@ footer .blob {
   place-items: center;
   color: rgba(255,255,255,0.6);
   transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+}
+.contact-info .social-btn {
+  border-color: rgba(106,13,173,0.15);
+  color: var(--plum);
 }
 .social-btn:hover {
   background: var(--plum);
