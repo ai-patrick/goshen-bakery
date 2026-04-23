@@ -3,7 +3,7 @@
    Auth flow, cake CRUD, bulk pricing, contact submissions.
 ============================================================ */
 
-const API = 'http://localhost:3000'; // Development backend URL
+const API = 'https://goshen-bakery.onrender.com'; // Production backend URL
 let TOKEN = localStorage.getItem('goshen_token') || '';
 let currentUser = localStorage.getItem('goshen_user') || '';
 

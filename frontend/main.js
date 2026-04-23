@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------
    CAKE GALLERY — fetches data from /api/cakes
 ---------------------------------------------------------- */
-const API = 'http://localhost:3000';
+const API = 'https://goshen-bakery.onrender.com';
 const grid = document.getElementById('cakeGrid');
 let allCakes = []; // cached from API
 
