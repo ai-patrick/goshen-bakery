@@ -1009,6 +1009,9 @@ footer .blob {
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   z-index: 9999;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   display: flex;
   align-items: center;
