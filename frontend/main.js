@@ -74,9 +74,13 @@ function renderCakes(filter) {
       '4 kg': 8000
     };
 
+    const imgUrl = (cake.image_url && cake.image_url.startsWith('/')) 
+      ? `${API}${cake.image_url}` 
+      : (cake.image_url || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80');
+
     card.innerHTML =
       '<div class="cake-img-wrap">' +
-        '<img src="' + cake.image_url + '" alt="' + (cake.alt_text || cake.name || '') + '" loading="lazy" width="600" height="450" />' +
+        '<img src="' + imgUrl + '" alt="' + (cake.alt_text || cake.name || '') + '" loading="lazy" width="600" height="450" />' +
         '<div class="qty-selector-overlay" style="display:none">' +
           '<div class="qty-header">' +
             '<p class="qty-title">Select Quantity</p>' +

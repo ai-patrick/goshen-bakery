@@ -197,7 +197,7 @@ function renderCakeTable(cakes) {
     <tr data-id="${cake._id}" class="${cake.is_active ? '' : 'cake-row-hidden'}">
       <td>
         ${cake.image_url
-      ? `<img src="${cake.image_url}" alt="${cake.alt_text || ''}" class="thumb" />`
+      ? `<img src="${cake.image_url.startsWith('/uploads/') ? API + cake.image_url : cake.image_url}" alt="${cake.alt_text || ''}" class="thumb" />`
       : `<div class="thumb-placeholder">🎂</div>`}
       </td>
       <td style="color:var(--text);font-weight:500">
