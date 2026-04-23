@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const cakeSchema = new mongoose.Schema({
-  name:        { type: String, required: true },
+  name:        { type: String, required: false, default: '' },
   description: { type: String, default: '' },
   category:    { type: String, required: true, default: 'celebration' },
   price:       { type: Number, required: true, default: 0 },

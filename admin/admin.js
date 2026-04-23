@@ -3,7 +3,7 @@
    Auth flow, cake CRUD, bulk pricing, contact submissions.
 ============================================================ */
 
-const API = 'https://goshen-bakery.onrender.com'; // Production backend URL
+const API = 'http://localhost:3000'; // Development backend URL
 let TOKEN = localStorage.getItem('goshen_token') || '';
 let currentUser = localStorage.getItem('goshen_user') || '';
 
@@ -38,7 +38,7 @@ function fmtDate(dt) {
    AUTH — LOGIN / LOGOUT
 ============================================================ */
 const loginScreen = document.getElementById('loginScreen');
-const dashboard   = document.getElementById('dashboard');
+const dashboard = document.getElementById('dashboard');
 
 function showDashboard() {
   loginScreen.classList.add('hidden');
@@ -66,8 +66,8 @@ document.getElementById('logoutBtn').addEventListener('click', logout);
 document.getElementById('loginBtn').addEventListener('click', async () => {
   const username = document.getElementById('loginUser').value.trim();
   const password = document.getElementById('loginPass').value;
-  const errEl    = document.getElementById('loginError');
-  const btn      = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
 
   if (!username || !password) {
     errEl.textContent = 'Please enter your username and password.';
@@ -76,18 +76,18 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   }
 
   btn.textContent = 'Signing in…';
-  btn.disabled    = true;
+  btn.disabled = true;
 
   try {
-    const res  = await fetch('/api/auth/login', {
-      method:  'POST',
+    const res = await fetch(API + '/api/auth/login', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Invalid credentials.');
 
-    TOKEN       = data.token;
+    TOKEN = data.token;
     currentUser = data.username;
     localStorage.setItem('goshen_token', TOKEN);
     localStorage.setItem('goshen_user', currentUser);
@@ -98,7 +98,7 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     errEl.classList.add('show');
   } finally {
     btn.textContent = 'Sign In';
-    btn.disabled    = false;
+    btn.disabled = false;
   }
 });
 
@@ -113,8 +113,8 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
    NAVIGATION — panel switching
 ============================================================ */
 const panels = {
-  cakes:    document.getElementById('panelCakes'),
-  pricing:  document.getElementById('panelPricing'),
+  cakes: document.getElementById('panelCakes'),
+  pricing: document.getElementById('panelPricing'),
   contacts: document.getElementById('panelContacts')
 };
 const titles = { cakes: 'Cake Gallery', pricing: 'Pricing', contacts: 'Order Enquiries' };
@@ -127,7 +127,7 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     Object.values(panels).forEach(p => p.classList.remove('active'));
     panels[key].classList.add('active');
     document.getElementById('topbarTitle').textContent = titles[key];
-    if (key === 'pricing')  loadPricingPanel();
+    if (key === 'pricing') loadPricingPanel();
     if (key === 'contacts') loadContacts();
   });
 });
@@ -146,16 +146,16 @@ async function loadStats() {
       apiFetch('/api/cakes/admin/all'),
       apiFetch('/api/cakes/admin/contacts')
     ]);
-    const cakes    = await cakesRes.json();
+    const cakes = await cakesRes.json();
     const contacts = await contactsRes.json();
-    const today    = new Date().toDateString();
-    const newToday = contacts.filter(c => new Date(c.created_at).toDateString() === today).length;
+    const today = new Date().toDateString();
+    const newToday = contacts.filter(c => new Date(c.createdAt).toDateString() === today).length;
     const newCount = contacts.filter(c => c.status === 'new').length;
 
-    document.getElementById('statTotal').textContent      = cakes.length;
-    document.getElementById('statActive').textContent     = cakes.filter(c => c.is_active).length;
-    document.getElementById('statEnquiries').textContent  = contacts.length;
-    document.getElementById('statNew').textContent        = newToday;
+    document.getElementById('statTotal').textContent = cakes.length;
+    document.getElementById('statActive').textContent = cakes.filter(c => c.is_active).length;
+    document.getElementById('statEnquiries').textContent = contacts.length;
+    document.getElementById('statNew').textContent = newToday;
 
     // Badge on nav
     const badge = document.getElementById('newBadge');
@@ -175,34 +175,36 @@ let cakesCache = [];
 
 async function loadCakes() {
   const tbody = document.getElementById('cakeTableBody');
-  tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Loading…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Loading…</td></tr>';
 
   try {
     const res = await apiFetch('/api/cakes/admin/all');
     cakesCache = await res.json();
     renderCakeTable(cakesCache);
   } catch (err) {
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-row" style="color:#f87171">Failed to load cakes.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-row" style="color:#f87171">Failed to load cakes.</td></tr>';
   }
 }
 
 function renderCakeTable(cakes) {
   const tbody = document.getElementById('cakeTableBody');
   if (!cakes.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">No cakes yet. Add one!</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">No cakes yet. Add one!</td></tr>';
     return;
   }
 
   tbody.innerHTML = cakes.map(cake => `
-    <tr data-id="${cake.id}">
+    <tr data-id="${cake._id}" class="${cake.is_active ? '' : 'cake-row-hidden'}">
       <td>
         ${cake.image_url
-          ? `<img src="${cake.image_url}" alt="${cake.alt_text || ''}" class="thumb" />`
-          : `<div class="thumb-placeholder">🎂</div>`}
+      ? `<img src="${cake.image_url}" alt="${cake.alt_text || ''}" class="thumb" />`
+      : `<div class="thumb-placeholder">🎂</div>`}
       </td>
-      <td style="color:var(--text);font-weight:500">${cake.name}</td>
+      <td style="color:var(--text);font-weight:500">
+        ${cake.name || '<i>(No Name)</i>'}
+        ${!cake.is_active ? ' <small style="color:#f87171;font-weight:400">(Hidden)</small>' : ''}
+      </td>
       <td><span style="text-transform:capitalize">${cake.category}</span></td>
-      <td>KES ${fmtPrice(cake.price)}</td>
       <td>
         <span class="status-badge ${cake.is_active ? 'status-active' : 'status-hidden'}">
           ${cake.is_active ? 'Active' : 'Hidden'}
@@ -210,10 +212,11 @@ function renderCakeTable(cakes) {
       </td>
       <td>
         <div class="row-actions">
-          <button class="action-btn edit" onclick="openEditModal(${cake.id})">Edit</button>
+          <button class="action-btn edit" onclick="openEditModal('${cake._id}')">Edit</button>
           ${cake.is_active
-            ? `<button class="action-btn delete" onclick="confirmHide(${cake.id}, '${escHtml(cake.name)}')">Hide</button>`
-            : `<button class="action-btn restore" onclick="restoreCake(${cake.id})">Restore</button>`}
+      ? `<button class="action-btn delete" onclick="confirmHide('${cake._id}', '${escHtml(cake.name || 'Unnamed Cake')}')">Hide</button>`
+      : `<button class="action-btn restore" onclick="restoreCake('${cake._id}')">Restore</button>`}
+          <button class="action-btn delete" onclick="confirmDelete('${cake._id}', '${escHtml(cake.name || 'Unnamed Cake')}')" style="margin-left:auto" title="Delete Permanently">🗑</button>
         </div>
       </td>
     </tr>
@@ -224,31 +227,73 @@ function escHtml(str) {
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
-/* ── Confirm hide (soft delete) ──────────────────────────── */
-let pendingDeleteId = null;
+/* ── Hide/Delete cake ────────────────────────────────────── */
+let pendingActionId = null;
 
 function confirmHide(id, name) {
-  pendingDeleteId = id;
-  document.getElementById('confirmMsg').textContent =
-    `"${name}" will be hidden from the public gallery. You can restore it at any time.`;
+  pendingActionId = id;
+  document.getElementById('confirmMsg').textContent = `Hide "${name}" from the public gallery? You can restore it later.`;
   document.getElementById('confirmModal').classList.remove('hidden');
 }
 
 document.getElementById('confirmCancel').addEventListener('click', () => {
-  pendingDeleteId = null;
+  pendingActionId = null;
   document.getElementById('confirmModal').classList.add('hidden');
 });
 
 document.getElementById('confirmOk').addEventListener('click', async () => {
-  if (!pendingDeleteId) return;
-  document.getElementById('confirmModal').classList.add('hidden');
+  if (!pendingActionId) return;
+  const btn = document.getElementById('confirmOk');
+  const oldText = btn.textContent;
+  btn.textContent = 'Hiding…';
+  btn.disabled = true;
+
   try {
-    await apiFetch('/api/cakes/admin/' + pendingDeleteId, { method: 'DELETE' });
-    pendingDeleteId = null;
+    const res = await apiFetch('/api/cakes/admin/' + pendingActionId, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Hide failed');
+    pendingActionId = null;
+    document.getElementById('confirmModal').classList.add('hidden');
     await loadCakes();
     await loadStats();
   } catch (err) {
-    alert('Could not hide cake: ' + err.message);
+    alert('Error hiding cake: ' + err.message);
+  } finally {
+    btn.textContent = oldText;
+    btn.disabled = false;
+  }
+});
+
+function confirmDelete(id, name) {
+  pendingActionId = id;
+  const modal = document.getElementById('deleteModal');
+  document.getElementById('deleteMsg').innerHTML = `This will completely remove <strong>"${name}"</strong> and its image from the server. <br><br><span style="color:#f87171">This action cannot be undone.</span>`;
+  modal.classList.remove('hidden');
+}
+
+document.getElementById('deleteCancel').addEventListener('click', () => {
+  pendingActionId = null;
+  document.getElementById('deleteModal').classList.add('hidden');
+});
+
+document.getElementById('deleteOk').addEventListener('click', async () => {
+  if (!pendingActionId) return;
+  const btn = document.getElementById('deleteOk');
+  const oldText = btn.textContent;
+  btn.textContent = 'Deleting…';
+  btn.disabled = true;
+
+  try {
+    const res = await apiFetch('/api/cakes/admin/' + pendingActionId + '/permanent', { method: 'DELETE' });
+    if (!res.ok) throw new Error('Delete failed');
+    pendingActionId = null;
+    document.getElementById('deleteModal').classList.add('hidden');
+    await loadCakes();
+    await loadStats();
+  } catch (err) {
+    alert('Error deleting cake: ' + err.message);
+  } finally {
+    btn.textContent = oldText;
+    btn.disabled = false;
   }
 });
 
@@ -269,39 +314,39 @@ async function restoreCake(id) {
 /* ============================================================
    ADD / EDIT CAKE MODAL
 ============================================================ */
-const modal     = document.getElementById('cakeModal');
+const modal = document.getElementById('cakeModal');
 const modalTitle = document.getElementById('modalTitle');
 const modalError = document.getElementById('modalError');
 
 function openAddModal() {
   modalTitle.textContent = 'Add Cake';
-  document.getElementById('cakeId').value       = '';
-  document.getElementById('cakeName').value     = '';
+  document.getElementById('cakeId').value = '';
+  document.getElementById('cakeName').value = '';
   document.getElementById('cakeCategory').value = 'celebration';
-  document.getElementById('cakePrice').value    = '';
-  document.getElementById('cakeActive').value   = '1';
-  document.getElementById('cakeDesc').value     = '';
-  document.getElementById('cakeAlt').value      = '';
+  document.getElementById('cakePrice').value = '';
+  document.getElementById('cakeActive').value = '1';
+  document.getElementById('cakeDesc').value = '';
+  document.getElementById('cakeAlt').value = '';
   clearImagePreview();
   modalError.classList.remove('show');
   modal.classList.remove('hidden');
 }
 
 function openEditModal(id) {
-  const cake = cakesCache.find(c => c.id === id);
+  const cake = cakesCache.find(c => c._id === id);
   if (!cake) return;
   modalTitle.textContent = 'Edit Cake';
-  document.getElementById('cakeId').value       = cake.id;
-  document.getElementById('cakeName').value     = cake.name;
+  document.getElementById('cakeId').value = cake._id;
+  document.getElementById('cakeName').value = cake.name || '';
   document.getElementById('cakeCategory').value = cake.category;
-  document.getElementById('cakePrice').value    = cake.price;
-  document.getElementById('cakeActive').value   = String(cake.is_active);
-  document.getElementById('cakeDesc').value     = cake.description || '';
-  document.getElementById('cakeAlt').value      = cake.alt_text || '';
+  document.getElementById('cakePrice').value = cake.price || 0;
+  document.getElementById('cakeActive').value = String(cake.is_active);
+  document.getElementById('cakeDesc').value = cake.description || '';
+  document.getElementById('cakeAlt').value = cake.alt_text || '';
   // Show existing image preview
   if (cake.image_url) {
     const preview = document.getElementById('imgPreview');
-    preview.src   = cake.image_url;
+    preview.src = cake.image_url;
     preview.style.display = 'block';
     document.getElementById('uploadPlaceholder').style.display = 'none';
   } else {
@@ -312,7 +357,7 @@ function openEditModal(id) {
 }
 
 document.getElementById('addCakeBtn').addEventListener('click', openAddModal);
-document.getElementById('modalClose').addEventListener('click',  closeModal);
+document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 
 function closeModal() {
@@ -324,9 +369,9 @@ function closeModal() {
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
 /* ── Image upload / drag-drop ────────────────────────────── */
-const uploadZone  = document.getElementById('uploadZone');
-const imageInput  = document.getElementById('imageInput');
-const imgPreview  = document.getElementById('imgPreview');
+const uploadZone = document.getElementById('uploadZone');
+const imageInput = document.getElementById('imageInput');
+const imgPreview = document.getElementById('imgPreview');
 const uploadPlaceholder = document.getElementById('uploadPlaceholder');
 
 uploadZone.addEventListener('click', () => imageInput.click());
@@ -366,20 +411,15 @@ function clearImagePreview() {
 
 /* ── Save cake (create or update) ───────────────────────── */
 document.getElementById('modalSave').addEventListener('click', async () => {
-  const id       = document.getElementById('cakeId').value;
-  const name     = document.getElementById('cakeName').value.trim();
+  const id = document.getElementById('cakeId').value;
+  const name = document.getElementById('cakeName').value.trim();
   const category = document.getElementById('cakeCategory').value;
-  const price    = document.getElementById('cakePrice').value;
+  const price = document.getElementById('cakePrice').value;
   const is_active = document.getElementById('cakeActive').value;
   const description = document.getElementById('cakeDesc').value.trim();
   const alt_text = document.getElementById('cakeAlt').value.trim();
-  const saveBtn  = document.getElementById('modalSave');
+  const saveBtn = document.getElementById('modalSave');
 
-  if (!name) {
-    modalError.textContent = 'Cake name is required.';
-    modalError.classList.add('show');
-    return;
-  }
   modalError.classList.remove('show');
 
   const formData = new FormData();
@@ -392,7 +432,7 @@ document.getElementById('modalSave').addEventListener('click', async () => {
   if (imageInput.files[0]) formData.append('image', imageInput.files[0]);
 
   saveBtn.textContent = 'Saving…';
-  saveBtn.disabled    = true;
+  saveBtn.disabled = true;
 
   try {
     const isEdit = Boolean(id);
@@ -410,7 +450,7 @@ document.getElementById('modalSave').addEventListener('click', async () => {
     modalError.classList.add('show');
   } finally {
     saveBtn.textContent = 'Save Cake';
-    saveBtn.disabled    = false;
+    saveBtn.disabled = false;
   }
 });
 
@@ -422,21 +462,21 @@ async function loadPricingPanel() {
   tbody.innerHTML = '<tr><td colspan="3" class="loading-row">Loading…</td></tr>';
 
   try {
-    const res   = await apiFetch('/api/cakes/admin/all');
+    const res = await apiFetch('/api/cakes/admin/all');
     const cakes = await res.json();
     tbody.innerHTML = cakes.map(cake => `
       <tr>
-        <td style="color:var(--text);font-weight:500">${cake.name}</td>
+        <td style="color:var(--text);font-weight:500">${cake.name || '<i>(No Name)</i>'}</td>
         <td style="text-transform:capitalize">${cake.category}</td>
         <td>
           <input
             type="number"
             class="price-input"
-            data-id="${cake.id}"
+            data-id="${cake._id}"
             value="${cake.price}"
             min="0"
             step="100"
-            aria-label="Price for ${cake.name}"
+            aria-label="Price for ${cake.name || 'Unnamed Cake'}"
           />
         </td>
       </tr>
@@ -447,33 +487,33 @@ async function loadPricingPanel() {
 }
 
 document.getElementById('savePricesBtn').addEventListener('click', async () => {
-  const inputs  = document.querySelectorAll('.price-input');
+  const inputs = document.querySelectorAll('.price-input');
   const updates = Array.from(inputs).map(inp => ({ id: inp.dataset.id, price: inp.value }));
-  const msgEl   = document.getElementById('priceSaveMsg');
+  const msgEl = document.getElementById('priceSaveMsg');
   const saveBtn = document.getElementById('savePricesBtn');
 
   saveBtn.textContent = 'Saving…';
-  saveBtn.disabled    = true;
-  msgEl.className     = 'save-msg';
-  msgEl.textContent   = '';
+  saveBtn.disabled = true;
+  msgEl.className = 'save-msg';
+  msgEl.textContent = '';
 
   try {
-    const res  = await apiFetch('/api/cakes/admin/bulk-price', {
+    const res = await apiFetch('/api/cakes/admin/bulk-price', {
       method: 'PUT',
-      body:   JSON.stringify({ updates })
+      body: JSON.stringify({ updates })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Save failed.');
     msgEl.textContent = '✓ All prices saved!';
-    msgEl.className   = 'save-msg success';
+    msgEl.className = 'save-msg success';
     // Refresh cakes cache in background
     loadCakes();
   } catch (err) {
     msgEl.textContent = '✗ ' + err.message;
-    msgEl.className   = 'save-msg error';
+    msgEl.className = 'save-msg error';
   } finally {
     saveBtn.textContent = 'Save All Prices';
-    saveBtn.disabled    = false;
+    saveBtn.disabled = false;
     setTimeout(() => { msgEl.className = 'save-msg'; msgEl.textContent = ''; }, 4000);
   }
 });
@@ -486,7 +526,7 @@ async function loadContacts() {
   tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Loading…</td></tr>';
 
   try {
-    const res      = await apiFetch('/api/cakes/admin/contacts');
+    const res = await apiFetch('/api/cakes/admin/contacts');
     const contacts = await res.json();
 
     if (!contacts.length) {
@@ -496,7 +536,7 @@ async function loadContacts() {
 
     tbody.innerHTML = contacts.map(c => `
       <tr>
-        <td style="white-space:nowrap">${fmtDate(c.created_at)}</td>
+        <td style="white-space:nowrap">${fmtDate(c.createdAt)}</td>
         <td style="color:var(--text);font-weight:500">${c.first_name} ${c.last_name}</td>
         <td>
           <a href="mailto:${c.email}" style="color:var(--plum-light)">${c.email}</a><br>
@@ -508,8 +548,8 @@ async function loadContacts() {
           </span>
         </td>
         <td>
-          <select class="status-select" data-id="${c.id}" aria-label="Status for ${c.first_name}">
-            <option value="new"       ${c.status === 'new'       ? 'selected' : ''}>New</option>
+          <select class="status-select" data-id="${c._id}" aria-label="Status for ${c.first_name}">
+            <option value="new"       ${c.status === 'new' ? 'selected' : ''}>New</option>
             <option value="contacted" ${c.status === 'contacted' ? 'selected' : ''}>Contacted</option>
             <option value="completed" ${c.status === 'completed' ? 'selected' : ''}>Completed</option>
           </select>
@@ -520,12 +560,12 @@ async function loadContacts() {
     // Attach change handlers to status selects
     tbody.querySelectorAll('.status-select').forEach(sel => {
       sel.addEventListener('change', async () => {
-        const id     = sel.dataset.id;
+        const id = sel.dataset.id;
         const status = sel.value;
         try {
           await apiFetch('/api/cakes/admin/contacts/' + id, {
             method: 'PUT',
-            body:   JSON.stringify({ status })
+            body: JSON.stringify({ status })
           });
           await loadStats(); // update badge
         } catch (err) {
@@ -549,7 +589,7 @@ if (TOKEN) {
   apiFetch('/api/cakes/admin/all')
     .then(res => {
       if (res.ok) showDashboard();
-      else        showLogin();
+      else showLogin();
     })
     .catch(() => showLogin());
 } else {

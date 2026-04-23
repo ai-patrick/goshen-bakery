@@ -6,6 +6,7 @@ const express = require('express');
 const multer  = require('multer');
 const path    = require('path');
 const fs      = require('fs');
+const mongoose = require('mongoose');
 const Cake    = require('../models/Cake');
 const ContactSubmission = require('../models/ContactSubmission');
 const auth    = require('../middleware/auth');
@@ -76,8 +77,8 @@ router.post('/admin', auth, upload.single('image'), async (req, res) => {
   try {
     const { name, description, category, price, alt_text } = req.body;
 
-    if (!name || !category) {
-      return res.status(400).json({ error: 'Name and category are required.' });
+    if (!category) {
+      return res.status(400).json({ error: 'Category is required.' });
     }
 
     const image_url = req.file
@@ -118,6 +119,10 @@ router.put('/admin/bulk-price', auth, async (req, res) => {
 // PUT /api/admin/cakes/:id — update a cake
 router.put('/admin/:id', auth, upload.single('image'), async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid cake ID.' });
+    }
+
     const { name, description, category, price, alt_text, is_active } = req.body;
 
     const existing = await Cake.findById(req.params.id);
@@ -135,8 +140,8 @@ router.put('/admin/:id', auth, upload.single('image'), async (req, res) => {
       image_url = req.body.image_url;
     }
 
-    existing.name        = name        ?? existing.name;
-    existing.description = description ?? existing.description;
+    existing.name        = name        !== undefined ? name : existing.name;
+    existing.description = description !== undefined ? description : existing.description;
     existing.category    = category    ?? existing.category;
     existing.price       = price !== undefined ? parseFloat(price) : existing.price;
     existing.image_url   = image_url;
@@ -153,11 +158,36 @@ router.put('/admin/:id', auth, upload.single('image'), async (req, res) => {
 // DELETE /api/admin/cakes/:id — soft delete
 router.delete('/admin/:id', auth, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid cake ID.' });
+    }
     const existing = await Cake.findById(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Cake not found.' });
 
     existing.is_active = false;
     await existing.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/cakes/:id/permanent — permanent delete
+router.delete('/admin/:id/permanent', auth, async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid cake ID.' });
+    }
+    const existing = await Cake.findById(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Cake not found.' });
+
+    // Physically delete image file if it exists locally
+    if (existing.image_url && existing.image_url.startsWith('/uploads/')) {
+      const imgPath = path.join(__dirname, '..', existing.image_url);
+      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+    }
+
+    await Cake.deleteOne({ _id: req.params.id });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -418,6 +418,8 @@ img { display: block; max-width: 100%; }
 }
 .data-table tbody tr:last-child td { border-bottom: none; }
 .data-table tbody tr:hover td { background: var(--surface-2); }
+.data-table tr.cake-row-hidden td { opacity: 0.55; filter: grayscale(0.4); }
+.data-table tr.cake-row-hidden:hover td { opacity: 0.8; }
 .data-table .loading-row { text-align: center; padding: 40px; color: var(--text-dim); }
 
 .thumb {

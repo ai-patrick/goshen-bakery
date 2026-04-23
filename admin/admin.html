@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="admin.css" />
+  <link rel="icon" href="/wedding-cake-16.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -112,13 +113,12 @@
               <th>Image</th>
               <th>Name</th>
               <th>Category</th>
-              <th>Price (KES)</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="cakeTableBody">
-            <tr><td colspan="6" class="loading-row">Loading…</td></tr>
+            <tr><td colspan="5" class="loading-row">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -246,7 +246,7 @@
   </div>
 </div>
 
-<!-- Confirm delete dialog -->
+<!-- Confirm Hide dialog -->
 <div id="confirmModal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
   <div class="modal modal-sm">
     <div class="modal-header">
@@ -258,6 +258,22 @@
     <div class="modal-footer">
       <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
       <button class="btn btn-danger" id="confirmOk">Yes, Hide It</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete dialog (Permanent) -->
+<div id="deleteModal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="deleteTitle">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3 id="deleteTitle" style="color:#ef4444">Delete Permanently?</h3>
+    </div>
+    <div class="modal-body">
+      <p id="deleteMsg" style="color:var(--text-mid)"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="deleteCancel">Cancel</button>
+      <button class="btn btn-danger" id="deleteOk">Yes, Delete Forever</button>
     </div>
   </div>
 </div>

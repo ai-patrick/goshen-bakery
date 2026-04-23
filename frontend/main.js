@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------
    CAKE GALLERY — fetches data from /api/cakes
 ---------------------------------------------------------- */
-const API = 'https://goshen-bakery.onrender.com';
+const API = 'http://localhost:3000';
 const grid = document.getElementById('cakeGrid');
 let allCakes = []; // cached from API
 
@@ -62,24 +62,76 @@ function renderCakes(filter) {
     card.style.transitionDelay = (i * 0.07) + 's';
     card.setAttribute('role', 'listitem');
 
-    const priceStr = cake.price > 0
-      ? 'KES ' + cake.price.toLocaleString('en-KE')
-      : 'Price on request';
+    // Pricing mapping
+    const pricing = {
+      '1/4 kg': 500,
+      '1/2 kg': 1000,
+      '1 kg': 2000,
+      '1.5 kg': 3000,
+      '2 kg': 4000,
+      '2.5 kg': 5000,
+      '3 kg': 6000,
+      '4 kg': 8000
+    };
 
     card.innerHTML =
       '<div class="cake-img-wrap">' +
-        '<img src="' + cake.image_url + '" alt="' + (cake.alt_text || cake.name) + '" loading="lazy" width="600" height="450" />' +
-        '<span class="cake-tag">' + cake.category + '</span>' +
-        '<span class="cake-price-badge">' + priceStr + '</span>' +
+        '<img src="' + cake.image_url + '" alt="' + (cake.alt_text || cake.name || '') + '" loading="lazy" width="600" height="450" />' +
+        '<div class="qty-selector-overlay" style="display:none">' +
+          '<div class="qty-header">' +
+            '<p class="qty-title">Select Quantity</p>' +
+            '<button class="qty-close-btn">&times;</button>' +
+          '</div>' +
+          '<div class="qty-options-scroll">' +
+            Object.keys(pricing).map(qty => 
+              '<button class="qty-opt" data-qty="' + qty + '" data-price="' + pricing[qty] + '">' +
+                '<span>' + qty + '</span>' +
+                '<strong>KES ' + pricing[qty].toLocaleString() + '</strong>' +
+              '</button>'
+            ).join('') +
+          '</div>' +
+        '</div>' +
       '</div>' +
-      '<div class="cake-info">' +
-        '<h3 class="cake-name">' + cake.name + '</h3>' +
-        '<p class="cake-desc">' + (cake.description || '') + '</p>' +
-        '<button class="download-btn" data-url="' + cake.image_url + '" data-name="' + cake.name.replace(/\s+/g, '-').toLowerCase() + '" aria-label="Download image of ' + cake.name + '">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
-          ' Download' +
-        '</button>' +
-      '</div>';
+      (cake.name ? 
+        '<div class="cake-info">' +
+          '<h3 class="cake-name">' + cake.name + '</h3>' +
+          '<p class="cake-desc">' + (cake.description || '') + '</p>' +
+          '<button class="show-qty-btn">Order Now</button>' +
+        '</div>' : 
+        '<div class="cake-card-btn-wrap" style="padding:10px;text-align:center"><button class="show-qty-btn">Order Now</button></div>'
+      );
+
+    const showBtn = card.querySelector('.show-qty-btn');
+    const qtyOverlay = card.querySelector('.qty-selector-overlay');
+    const closeBtn = card.querySelector('.qty-close-btn');
+
+    // Show quantity selector
+    showBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      qtyOverlay.style.display = 'flex';
+    });
+
+    // Close quantity selector
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      qtyOverlay.style.display = 'none';
+    });
+
+    // Quantity selection -> WhatsApp
+    card.querySelectorAll('.qty-opt').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const qty = opt.dataset.qty;
+        const price = opt.dataset.price;
+        const message = encodeURIComponent(
+          'Hello, I would like to order ' + cake.name + '\n' +
+          'Quantity: ' + qty + '\n' +
+          'Price: KES ' + Number(price).toLocaleString()
+        );
+        window.open('https://wa.me/2547XXXXXXXX?text=' + message, '_blank');
+        qtyOverlay.style.display = 'none';
+      });
+    });
 
     grid.appendChild(card);
   });
