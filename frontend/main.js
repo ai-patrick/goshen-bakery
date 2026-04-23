@@ -128,7 +128,7 @@ function renderCakes(filter) {
           'Quantity: ' + qty + '\n' +
           'Price: KES ' + Number(price).toLocaleString()
         );
-        window.open('https://wa.me/2547XXXXXXXX?text=' + message, '_blank');
+        window.open('https://wa.me/254700123456?text=' + message, '_blank');
         qtyOverlay.style.display = 'none';
       });
     });
