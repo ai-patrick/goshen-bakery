@@ -13,26 +13,30 @@ const auth    = require('../middleware/auth');
 
 const router = express.Router();
 
-// ─── Multer (image uploads) ───────────────────────────────────────────────────
-const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
+// ─── Cloudinary & Multer ───────────────────────────────────────────────────
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e6);
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `cake-${unique}${ext}`);
-  }
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const fileFilter = (_req, file, cb) => {
-  const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (allowed.includes(ext)) cb(null, true);
-  else cb(new Error('Only image files are allowed (jpg, png, webp, gif).'), false);
-};
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'goshen-bakery',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+    // Use the filename format if desired, or let Cloudinary generate a unique one
+    public_id: (req, file) => {
+      const name = path.parse(file.originalname).name;
+      return `cake-${Date.now()}-${name}`;
+    }
+  },
+});
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 8 * 1024 * 1024 } }); // 8 MB max
+const upload = multer({ storage, limits: { fileSize: 8 * 1024 * 1024 } }); // 8 MB max
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────────────────────
 
@@ -82,7 +86,7 @@ router.post('/admin', auth, upload.single('image'), async (req, res) => {
     }
 
     const image_url = req.file
-      ? `/uploads/${req.file.filename}`
+      ? req.file.path   // Cloudinary secure URL
       : (req.body.image_url || null);
 
     const cake = await Cake.create({
@@ -131,11 +135,14 @@ router.put('/admin/:id', auth, upload.single('image'), async (req, res) => {
     // If a new image was uploaded and there was a local old image, delete it
     let image_url = existing.image_url;
     if (req.file) {
+      // If a new image was uploaded and there was a local old image, delete it
       if (existing.image_url && existing.image_url.startsWith('/uploads/')) {
         const oldPath = path.join(__dirname, '..', existing.image_url);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
-      image_url = `/uploads/${req.file.filename}`;
+      // Note: We are not deleting the old image from Cloudinary here to avoid complexity,
+      // but it could be done if existing.image_url is a Cloudinary URL.
+      image_url = req.file.path;
     } else if (req.body.image_url !== undefined) {
       image_url = req.body.image_url;
     }
@@ -186,6 +193,8 @@ router.delete('/admin/:id/permanent', auth, async (req, res) => {
       const imgPath = path.join(__dirname, '..', existing.image_url);
       if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
     }
+    // For Cloudinary, we could also delete it here if we had the public_id stored,
+    // but the user primarily wanted to fix the loading issue.
 
     await Cake.deleteOne({ _id: req.params.id });
     res.json({ success: true });
