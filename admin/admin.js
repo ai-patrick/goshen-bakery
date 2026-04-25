@@ -114,10 +114,9 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
 ============================================================ */
 const panels = {
   cakes: document.getElementById('panelCakes'),
-  pricing: document.getElementById('panelPricing'),
   contacts: document.getElementById('panelContacts')
 };
-const titles = { cakes: 'Cake Gallery', pricing: 'Pricing', contacts: 'Order Enquiries' };
+const titles = { cakes: 'Cake Gallery', contacts: 'Order Enquiries' };
 
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -127,7 +126,6 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     Object.values(panels).forEach(p => p.classList.remove('active'));
     panels[key].classList.add('active');
     document.getElementById('topbarTitle').textContent = titles[key];
-    if (key === 'pricing') loadPricingPanel();
     if (key === 'contacts') loadContacts();
   });
 });
@@ -323,7 +321,6 @@ function openAddModal() {
   document.getElementById('cakeId').value = '';
   document.getElementById('cakeName').value = '';
   document.getElementById('cakeCategory').value = 'celebration';
-  document.getElementById('cakePrice').value = '';
   document.getElementById('cakeActive').value = '1';
   document.getElementById('cakeDesc').value = '';
   document.getElementById('cakeAlt').value = '';
@@ -339,7 +336,6 @@ function openEditModal(id) {
   document.getElementById('cakeId').value = cake._id;
   document.getElementById('cakeName').value = cake.name || '';
   document.getElementById('cakeCategory').value = cake.category;
-  document.getElementById('cakePrice').value = cake.price || 0;
   document.getElementById('cakeActive').value = String(cake.is_active);
   document.getElementById('cakeDesc').value = cake.description || '';
   document.getElementById('cakeAlt').value = cake.alt_text || '';
@@ -414,7 +410,6 @@ document.getElementById('modalSave').addEventListener('click', async () => {
   const id = document.getElementById('cakeId').value;
   const name = document.getElementById('cakeName').value.trim();
   const category = document.getElementById('cakeCategory').value;
-  const price = document.getElementById('cakePrice').value;
   const is_active = document.getElementById('cakeActive').value;
   const description = document.getElementById('cakeDesc').value.trim();
   const alt_text = document.getElementById('cakeAlt').value.trim();
@@ -425,7 +420,6 @@ document.getElementById('modalSave').addEventListener('click', async () => {
   const formData = new FormData();
   formData.append('name', name);
   formData.append('category', category);
-  formData.append('price', price || 0);
   formData.append('is_active', is_active);
   formData.append('description', description);
   formData.append('alt_text', alt_text);
