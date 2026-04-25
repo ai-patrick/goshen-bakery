@@ -79,7 +79,7 @@ router.get('/admin/all', auth, async (req, res) => {
 // POST /api/admin/cakes — create new cake
 router.post('/admin', auth, upload.single('image'), async (req, res) => {
   try {
-    const { name, description, category, price, alt_text } = req.body;
+    const { name, description, category, price, alt_text, is_active } = req.body;
 
     if (!category) {
       return res.status(400).json({ error: 'Category is required.' });
@@ -92,7 +92,8 @@ router.post('/admin', auth, upload.single('image'), async (req, res) => {
     const cake = await Cake.create({
       name, description, category,
       price: parseFloat(price) || 0,
-      image_url, alt_text
+      image_url, alt_text,
+      is_active: is_active !== undefined ? (is_active === 'true' || is_active === true || is_active === '1' || is_active === 1) : true
     });
 
     res.status(201).json(cake);
@@ -153,7 +154,7 @@ router.put('/admin/:id', auth, upload.single('image'), async (req, res) => {
     existing.price       = price !== undefined ? parseFloat(price) : existing.price;
     existing.image_url   = image_url;
     existing.alt_text    = alt_text    ?? existing.alt_text;
-    existing.is_active   = is_active !== undefined ? (is_active === 'true' || is_active === true || is_active === 1) : existing.is_active;
+    existing.is_active   = is_active !== undefined ? (is_active === 'true' || is_active === true || is_active === '1' || is_active === 1) : existing.is_active;
 
     await existing.save();
     res.json(existing);
