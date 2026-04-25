@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
   }
 
   // 2. Build WhatsApp link
-  const waNumber = process.env.WHATSAPP_NUMBER || '254700123456';
+  const waNumber = process.env.WHATSAPP_NUMBER || '254745588748';
   const waText = encodeURIComponent(
     `Hi Goshen Bakery! 🎂\n\nI'm ${fname} ${lname} and I'd like to order a cake.\n\n${occasion}\n\nPlease get in touch at ${email}${phone ? ' or ' + phone : ''}.`
   );
